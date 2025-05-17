@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Sprawdź pogodę{% endblock %}
+{% block content %}
+
+<div class="intro-section">
+  <h2>Sprawdź pogodę</h2>
+  <form method="POST" class="city-form">
+    <input type="text" name="city" placeholder="np. Warsaw" required>
+    <button type="submit">Pobierz dane</button>
+  </form>
+</div>
+
+{% if weather_data %}
+  <div class="weather-container">
+
+    <!-- LEWA: aktualna pogoda + 5-dniowa tabela -->
+    <div class="weather-left">
+      <div class="weather-card">
+        <h3>Pogoda: {{ weather_data.name }}</h3>
+        <ul>
+          <li>🌡 <strong>{{ weather_data.main.temp }}°C</strong></li>
+          <li>💧 <strong>{{ weather_data.main.humidity }}%</strong></li>
+          <li>🌬 <strong>{{ weather_data.wind.speed }} m/s</strong></li>
+          <li>📋 <strong>{{ weather_data.weather[0].description }}</strong></li>
+        </ul>
+        <form method="POST" action="{{ url_for('generate_pdf') }}">
+          <input type="hidden" name="city" value="{{ weather_data.name }}">
+          <button class="pdf-button">Pobierz raport PDF</button>
+        </form>
+      </div>
+
+      {% if daily_forecast %}
+      <div class="forecast-5days">
+        <h4>Prognoza na 5 dni</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th><th>Min °C</th><th>Max °C</th><th>Wilg.</th><th>Wiatr</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in daily_forecast %}
+            <tr>
+              <td>{{ d.date }}</td>
+              <td>{{ d.tmin }}</td>
+              <td>{{ d.tmax }}</td>
+              <td>{{ d.hum }}</td>
+              <td>{{ d.wind }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- PRAWA: wykresy -->
+    <div class="weather-right">
+      <div class="tabs">
+        <button class="tab-button active" data-tab="chart-temp">Temperatura</button>
+        <button class="tab-button"        data-tab="chart-hum">Wilgotność</button>
+        <button class="tab-button"        data-tab="chart-wind">Wiatr</button>
+        <button class="tab-button"        data-tab="chart-cond">Warunki</button>
+      </div>
+      <div class="tab-content-wrapper">
+        <div id="chart-temp" class="tab-content active">
+          <canvas id="tempChart"></canvas>
+        </div>
+        <div id="chart-hum" class="tab-content">
+          <canvas id="humChart"></canvas>
+        </div>
+        <div id="chart-wind" class="tab-content">
+          <canvas id="windChart"></canvas>
+        </div>
+        <div id="chart-cond" class="tab-content">
+          <canvas id="condChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block page_scripts %}
+<script>
+$(function(){
+  // zakładki
+  $('.tab-button').click(function(){
+    let t=$(this).data('tab');
+    $('.tab-button').removeClass('active');
+    $(this).addClass('active');
+    $('.tab-content').removeClass('active');
+    $('#'+t).addClass('active');
+  });
+
+  // dane
+  const labels = {{ dates|tojson }};
+  const temps  = {{ temp_data|tojson }};
+  const hums   = {{ hum_data|tojson }};
+  const winds  = {{ wind_data|tojson }};
+  const conds  = {{ cond_counts|tojson }};
+
+  const opts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { x:{ticks:{maxRotation:90,minRotation:45}} }
+  };
+
+  new Chart($('#tempChart'), { type:'line', data:{labels,datasets:[{label:'°C',data:temps}]}, options:opts });
+  new Chart($('#humChart'),  { type:'line', data:{labels,datasets:[{label:'%', data:hums}]},   options:opts });
+  new Chart($('#windChart'), { type:'line', data:{labels,datasets:[{label:'m/s',data:winds}]}, options:opts });
+  new Chart($('#condChart'), { type:'bar',  data:{labels:Object.keys(conds),datasets:[{label:'Ilość',data:Object.values(conds)}]}, options:opts });
+});
+</script>
+{% endblock %}

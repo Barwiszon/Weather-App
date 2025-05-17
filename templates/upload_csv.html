@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Wgraj plik CSV{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+  <h2>Wgraj plik CSV z danymi pogodowymi</h2>
+  <form method="POST" enctype="multipart/form-data" class="upload-form">
+    <input type="file" name="csv_file" accept=".csv" required>
+    <button type="submit">Wgraj plik</button>
+  </form>
+</div>
+{% endblock %}

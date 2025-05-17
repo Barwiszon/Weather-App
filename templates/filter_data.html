@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Filtrowanie danych{% endblock %}
+{% block content %}
+
+<h2>Filtrowanie danych pogodowych</h2>
+
+<form method="get" action="{{ url_for('filter_data') }}">
+  <label for="filename">Wybierz plik CSV:</label>
+  <select name="filename" id="filename"
+          onchange="this.form.submit()">
+    <option value="">– wybierz –</option>
+    {% for f in files %}
+      <option value="{{ f }}"
+        {% if f == selected_file %}selected{% endif %}>
+        {{ f }}
+      </option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if columns %}
+  <form method="post"
+        action="{{ url_for('filter_data', filename=selected_file) }}">
+    <input type="hidden" name="filename"
+           value="{{ selected_file }}">
+    <label for="column">Kolumna:</label>
+    <select name="column" id="column">
+      {% for col in columns %}
+        <option value="{{ col }}"
+          {% if col == column %}selected{% endif %}>
+          {{ col }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label for="value">Wartość do filtrowania:</label>
+    <input type="text" name="value" id="value"
+           value="{{ value or '' }}">
+
+    <button type="submit">Filtruj</button>
+  </form>
+{% endif %}
+
+{% if filtered_table %}
+  <h3>Wyniki filtrowania ({{ column }} == "{{ value }}"):</h3>
+  <div>{{ filtered_table | safe }}</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,383 @@
+/* ============================================================================
+   VARIABLES
+   ============================================================================ */
+:root {
+  --primary:       #ff9500;
+  --primary-light: rgba(255,149,0,0.3);
+  --primary-80:    rgba(255,149,0,0.8);
+  --dark:          #000;
+  --dark-90:       rgba(0,0,0,0.9);
+  --light:         #fafafa;
+  --glass-bg:      rgba(0,0,0,0.4);
+  --border:        rgba(255,149,0,0.6);
+  --shadow:        rgba(0,0,0,0.7);
+  --radius:        8px;
+  --transition:    0.3s ease;
+}
+
+/* ============================================================================
+   RESET & BASE
+   ============================================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: linear-gradient(135deg, var(--dark-90), var(--dark));
+  color: var(--primary);
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.5;
+}
+main {
+  margin: 80px auto 2rem; /* zostaw miejsce na navbar */
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+/* ============================================================================
+   NAVBAR
+   ============================================================================ */
+.navbar {
+  position: fixed; top: 0; left: 0;
+  width: 100%; padding: 0.75rem 1.5rem;
+  background: var(--dark-90);
+  backdrop-filter: blur(4px);
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 1000;
+}
+.navbar h1 {
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+.navbar-links a {
+  color: var(--primary);
+  text-decoration: none;
+  margin-left: 1rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius);
+  transition: background var(--transition);
+}
+.navbar-links a:hover {
+  background: var(--primary-80);
+  color: var(--dark);
+}
+
+/* ============================================================================
+   INTRO / CITY FORM (strona główna)
+   ============================================================================ */
+.intro-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.intro-section h2 {
+  font-size: 2rem; margin-bottom: 0.75rem;
+}
+.city-form {
+  display: inline-flex; gap: 0.5rem;
+}
+.city-form input {
+  padding: 0.5rem; width: 200px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--dark);
+  color: var(--light);
+  text-align: center;
+}
+.city-form button {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  border: none; border-radius: var(--radius);
+  color: var(--dark);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.city-form button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px var(--primary-80);
+}
+
+/* ============================================================================
+   WEATHER CONTAINER + CARDS (strona główna)
+   ============================================================================ */
+.weather-container {
+  display: flex; flex-wrap: wrap; gap: 2rem;
+  margin-bottom: 2rem;
+}
+.weather-left, .weather-right {
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  flex: 1; min-width: 280px;
+}
+.weather-card {
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.weather-card h3 {
+  color: var(--primary); font-size: 1.4rem;
+}
+.weather-card ul {
+  list-style: none; color: var(--light);
+}
+.weather-card ul li {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.pdf-button {
+  align-self: start;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  border: none; border-radius: var(--radius);
+  color: var(--dark); cursor: pointer;
+  transition: background var(--transition);
+}
+.pdf-button:hover { background: #ffb733; }
+
+/* 5-dniowa prognoza tabelaryczna */
+.forecast-5days {
+  margin-top: 1.5rem;
+}
+.forecast-5days h4 {
+  margin-bottom: 0.5rem; color: var(--primary);
+}
+.forecast-5days table {
+  width: 100%; border-collapse: collapse;
+  background: rgba(255,149,0,0.05);
+}
+.forecast-5days th,
+.forecast-5days td {
+  border: 1px solid var(--border);
+  padding: 0.4rem; text-align: center;
+  color: var(--light); font-size: 0.9rem;
+}
+.forecast-5days thead th {
+  background: var(--primary); color: var(--dark);
+}
+
+/* ============================================================================
+   TABS & CHARTS (strona główna)
+   ============================================================================ */
+.tabs {
+  display: flex; gap: 0.5rem; margin-top: 1rem;
+}
+.tab-button {
+  padding: 0.5rem 1rem;
+  background: var(--dark);
+  color: var(--light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.tab-button.active {
+  background: var(--primary);
+  color: var(--dark);
+}
+.tab-button:not(.active):hover {
+  background: var(--primary-light);
+}
+.tab-content-wrapper {
+  position: relative;
+  width: 100%; height: 400px;
+  margin-top: 1rem;
+}
+.tab-content {
+  display: none; position: absolute; inset: 0;
+}
+.tab-content.active {
+  display: block;
+}
+.tab-content canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ============================================================================
+   UPLOAD CSV FORM (upload_csv.html)
+   ============================================================================ */
+.upload-container {
+  max-width: 600px;
+  margin: 120px auto 2rem;
+  padding: 2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.upload-container h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+.upload-form {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+.upload-form input[type="file"] {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--dark);
+  color: var(--primary);
+  cursor: pointer;
+}
+.upload-form button {
+  padding: 0.6rem 1.2rem;
+  background: var(--primary);
+  border: none; border-radius: var(--radius);
+  color: var(--dark); font-weight: bold;
+  cursor: pointer;
+  transition: transform var(--transition), background var(--transition);
+}
+.upload-form button:hover {
+  transform: scale(1.05);
+  background: #ffb733;
+}
+
+/* ============================================================================
+   UPLOAD SUCCESS / PODGLĄD CSV (upload_success.html)
+   ============================================================================ */
+.success-container {
+  max-width: 1000px;
+  margin: 120px auto 2rem;
+  padding: 2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+}
+.success-container h2,
+.success-container h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* pierwsze 5 wierszy */
+.table-wrapper {
+  overflow-x: visible;
+  margin: 1.5rem 0;
+  padding: 0.5rem;
+  background: rgba(255,149,0,0.05);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+}
+.table-wrapper table {
+  width: 100%; border-collapse: collapse; table-layout: auto;
+}
+.table-wrapper th,
+.table-wrapper td {
+  border: 1px solid var(--primary);
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  color: #fff; font-size: 0.9rem;
+}
+.table-wrapper thead th {
+  background: var(--primary);
+  color: var(--dark);
+  font-weight: bold;
+}
+.table-wrapper tbody tr:nth-child(odd) {
+  background: rgba(255,149,0,0.1);
+}
+.table-wrapper tbody tr:hover {
+  background: rgba(255,149,0,0.2);
+}
+
+/* karty metryk i przyciski nawigacji */
+.metrics-cards {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: center; margin-top: 1.5rem;
+}
+.metrics-cards .card {
+  flex: 1 1 150px;
+  background: var(--dark);
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: 0 2px 8px var(--dark-90);
+  transition: transform var(--transition);
+}
+.metrics-cards .card:hover {
+  transform: translateY(-4px);
+}
+.metrics-cards .card h4 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+.metrics-cards .card p {
+  color: var(--light);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex; gap: 1rem;
+  justify-content: center; margin-top: 1.5rem;
+}
+.button-group button,
+.btn-animated {
+  padding: 0.6rem 1.2rem;
+  background: var(--primary);
+  border: none; border-radius: var(--radius);
+  color: var(--dark); font-weight: bold;
+  cursor: pointer;
+  transition: transform var(--transition), background var(--transition);
+}
+.button-group button:hover,
+.btn-animated:hover {
+  transform: scale(1.05);
+  background: #ffb733;
+}
+
+/* wykresy w upload_success */
+.charts-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.chart-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex; flex-direction: column;
+  height: 350px;
+  box-shadow: 0 4px 8px var(--shadow);
+}
+.chart-card h4 {
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.chart-card canvas {
+  flex: 1;
+  width: 100% !important;
+  height: calc(100% - 1rem) !important;
+}
+
+/* ============================================================================
+   RESPONSYWNOŚĆ
+   ============================================================================ */
+@media (max-width: 800px) {
+  .weather-container { flex-direction: column; }
+  .tab-content-wrapper { height: 300px; }
+  .chart-card { height: 250px; }
+
+  .upload-container,
+  .success-container {
+    margin: 80px auto 1rem;
+    padding: 1rem;
+  }
+  .upload-form,
+  .metrics-cards,
+  .button-group {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,3 @@
+# config.py – dodaj do .gitignore
+API_KEY = "cfe731d84550b6520eb7bdb4121826ca"
+FLASK_SECRET_KEY = "cfe731d84550b6520eb7bdb4121826ca"

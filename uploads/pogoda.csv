@@ -1,0 +1,8 @@
+date,city,temperature,humidity,pressure,wind_speed,description
+2025-03-01,Warsaw,3,87,1016,4.2,Partly cloudy
+2025-03-02,Warsaw,4,81,1013,3.8,Light rain
+2025-03-03,Warsaw,2,92,1010,2.5,Overcast
+2025-03-04,Warsaw,5,78,1008,5.1,Sunny
+2025-03-05,Warsaw,7,72,1011,4.6,Partly cloudy
+2025-03-06,Warsaw,6,79,1014,3.2,Overcast
+2025-03-07,Warsaw,8,70,1015,2.9,Light rain

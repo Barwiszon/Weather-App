@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Wgrano plik CSV{% endblock %}
+
+{% block content %}
+<div class="success-container">
+
+  <!-- Nagłówek -->
+  <h2>Plik CSV: {{ filename }} został załadowany pomyślnie!</h2>
+
+  <!-- PODGLĄD -->
+  <div id="viewSection">
+    <h3>Pierwsze 5 wierszy</h3>
+    <div class="table-wrapper">
+      {{ preview_html | safe }}
+    </div>
+  </div>
+
+  <!-- PODSUMOWANIE -->
+  <div id="summarySection" style="display:none;">
+    <h3>Podsumowanie danych (kolumny numeryczne)</h3>
+    <div class="table-wrapper">
+      {{ summary_html | safe }}
+    </div>
+
+    <div class="metrics-cards">
+      <div class="card">
+        <h4>Rekordy</h4>
+        <p>{{ metrics.records }}</p>
+      </div>
+      {% if metrics.avg_temp is not none %}
+      <div class="card">
+        <h4>Śr. temp.</h4>
+        <p>{{ metrics.avg_temp|round(1) }}°C</p>
+      </div>
+      {% endif %}
+      {% if metrics.max_humidity is not none %}
+      <div class="card">
+        <h4>Maks. wilgotność</h4>
+        <p>{{ metrics.max_humidity }}%</p>
+      </div>
+      {% endif %}
+      {% if metrics.max_wind is not none %}
+      <div class="card">
+        <h4>Maks. wiatr</h4>
+        <p>{{ metrics.max_wind }} m/s</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- WYKRESY -->
+  <div id="chartsSection" style="display:none;">
+    <h3>Wykresy</h3>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h4>Temperatura (°C)</h4>
+        <canvas id="tempChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h4>Wilgotność (%)</h4>
+        <canvas id="humChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRZYCISKI NAWIGACJI -->
+  <div class="button-group">
+    <button id="btnView"    class="btn-animated">Podgląd</button>
+    <button id="btnSummary" class="btn-animated">Podsumowanie</button>
+    <button id="btnCharts"  class="btn-animated">Wykresy</button>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+  <!-- Chart.js (ładuj w base.html w <head> lub tutaj) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  $(function(){
+    // przełączanie sekcji
+    $('#btnView').click(function(){
+      $('#viewSection').show();
+      $('#summarySection, #chartsSection').hide();
+    });
+    $('#btnSummary').click(function(){
+      $('#summarySection').show();
+      $('#viewSection, #chartsSection').hide();
+    });
+    $('#btnCharts').click(function(){
+      $('#chartsSection').show();
+      $('#viewSection, #summarySection').hide();
+
+      if (!window._chartsInit) {
+        window._chartsInit = true;
+        // dane do wykresów z Jinja
+        const labels = {{ dates|tojson }};
+        const temps  = {{ temp_data|tojson }};
+        const hums   = {{ humidity_data|tojson }};
+
+        new Chart($('#tempChart'), {
+          type: 'line',
+          data: { labels, datasets:[{ label:'Temp. (°C)', data:temps }] },
+          options: { responsive:true, maintainAspectRatio:false }
+        });
+        new Chart($('#humChart'), {
+          type: 'line',
+          data: { labels, datasets:[{ label:'Wilg. (%)', data:hums }] },
+          options: { responsive:true, maintainAspectRatio:false }
+        });
+      }
+    });
+
+    // start od Podglądu
+    $('#btnView').click();
+  });
+  </script>
+{% endblock %}

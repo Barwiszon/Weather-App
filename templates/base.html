@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Moja strona{% endblock %}</title>
+
+  <!-- Twój dotychczasowy styles.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+  <!-- jQuery (wymagane przez DataTables) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- DataTables JS -->
+  <script
+    src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="main-header">
+    <nav class="navbar">
+      <h1>Weather App</h1>
+      <div class="navbar-links">
+        <a href="{{ url_for('index') }}">Strona główna</a>
+        <a href="{{ url_for('upload_csv') }}">Wgraj plik CSV</a>
+
+      </div>
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for msg in messages %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>
