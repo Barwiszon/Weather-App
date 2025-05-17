@@ -11,9 +11,7 @@ from flask import (
 from fpdf import FPDF
 from io import BytesIO
 
-# ---------------------------------------
-# Konfiguracja: import config lub ENV
-# ---------------------------------------
+
 API_KEY = None
 FLASK_SECRET_KEY = None
 try:
@@ -29,9 +27,7 @@ if not API_KEY:
 if not FLASK_SECRET_KEY:
     raise RuntimeError("Brak sekretu Flask (FLASK_SECRET_KEY).")
 
-# ---------------------------------------
-# Ścieżki do czcionek Unicode (dla PDF)
-# ---------------------------------------
+
 BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
 FONTS_DIR  = os.path.join(BASE_DIR, 'fonts')
 FONT_REG   = os.path.join(FONTS_DIR, 'DejaVuSansCondensed.ttf')
@@ -41,7 +37,7 @@ FONT_BOLD  = os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Bold.ttf')
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
 
-# Foldery na upload i statyczne obrazki
+
 UPLOAD_FOLDER = 'uploads'
 STATIC_FOLDER = 'static'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -72,12 +68,11 @@ def index():
         url_fc  = f'https://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={API_KEY}'
 
         try:
-            # Aktualne dane
+
             r1 = requests.get(url_cur); r1.raise_for_status(); weather_data = r1.json()
-            # Prognoza co 3h
+
             r2 = requests.get(url_fc); r2.raise_for_status(); forecast = r2.json()
 
-            # Dane do wykresów
             for itm in forecast['list']:
                 dt = pd.to_datetime(itm['dt_txt'])
                 dates.append(dt.strftime('%Y-%m-%d %H:%M'))
@@ -87,7 +82,7 @@ def index():
                 c = itm['weather'][0]['main']
                 cond_counts[c] = cond_counts.get(c, 0) + 1
 
-            # Budujemy DataFrame i agregujemy dziennie
+
             df_fc = pd.DataFrame([
                 {
                     'dt': pd.to_datetime(i['dt_txt']),
@@ -104,7 +99,7 @@ def index():
                 'wind': 'mean'
             }).dropna()
 
-            # Upraszczamy nazwy kolumn
+
             daily.columns = ['tmin','tmax','hum_mean','wind_mean']
             daily = daily.reset_index().head(5)
 
@@ -136,15 +131,13 @@ def index():
 
 @app.route('/generate_pdf', methods=['POST'])
 def generate_pdf():
-    """
-    Generuje PDF z aktualną pogodą i wykresem.
-    """
+
     city = request.form.get('city')
     if not city:
         flash('Brak nazwy miasta do wygenerowania PDF.')
         return redirect(url_for('index'))
 
-    # Ponowne pobranie
+
     url_cur = f'https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={API_KEY}'
     url_fc  = f'https://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={API_KEY}'
 
@@ -155,7 +148,7 @@ def generate_pdf():
         flash(f'Błąd podczas pobierania do PDF: {e}')
         return redirect(url_for('index'))
 
-    # Tworzymy wykres w buforze
+
     df = pd.DataFrame([
         {'dt': i['dt_txt'], 'temp': i['main']['temp']}
         for i in forecast['list']
@@ -171,12 +164,12 @@ def generate_pdf():
     plt.close()
     buf.seek(0)
 
-    # Tymczasowy plik
+
     tmp = os.path.join(STATIC_FOLDER, 'tmp_chart.png')
     with open(tmp, 'wb') as img:
         img.write(buf.getbuffer())
 
-    # Generujemy PDF
+
     pdf = FPDF()
     pdf.add_page()
     pdf.add_font('DejaVu','', FONT_REG, uni=True)
@@ -195,10 +188,10 @@ def generate_pdf():
     pdf.ln(10)
     pdf.image(tmp, x=10, w=190)
 
-    # Sprzątamy
+
     os.remove(tmp)
 
-    # Wyślij plik
+
     pdf_bytes = pdf.output(dest='S').encode('latin-1')
     return send_file(
         BytesIO(pdf_bytes),
@@ -214,7 +207,7 @@ def upload_csv():
     filename = None
 
     if request.method == 'POST':
-        # upload lub wybór istniejącego
+
         if 'csv_file' in request.files and request.files['csv_file'].filename:
             f = request.files['csv_file']
             filename = f.filename
@@ -231,7 +224,7 @@ def upload_csv():
             flash(f'Błąd odczytu CSV: {e}')
             return redirect(url_for('upload_csv'))
 
-        # filtrowanie po dacie
+
         if request.form.get('start_date'):
             df = df[df['date'] >= pd.to_datetime(request.form['start_date'])]
         if request.form.get('end_date'):

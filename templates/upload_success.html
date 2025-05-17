@@ -4,10 +4,10 @@
 {% block content %}
 <div class="success-container">
 
-  <!-- Nagłówek -->
+
   <h2>Plik CSV: {{ filename }} został załadowany pomyślnie!</h2>
 
-  <!-- PODGLĄD -->
+
   <div id="viewSection">
     <h3>Pierwsze 5 wierszy</h3>
     <div class="table-wrapper">
@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <!-- PODSUMOWANIE -->
+
   <div id="summarySection" style="display:none;">
     <h3>Podsumowanie danych (kolumny numeryczne)</h3>
     <div class="table-wrapper">
@@ -48,7 +48,7 @@
     </div>
   </div>
 
-  <!-- WYKRESY -->
+
   <div id="chartsSection" style="display:none;">
     <h3>Wykresy</h3>
     <div class="charts-row">
@@ -63,7 +63,7 @@
     </div>
   </div>
 
-  <!-- PRZYCISKI NAWIGACJI -->
+
   <div class="button-group">
     <button id="btnView"    class="btn-animated">Podgląd</button>
     <button id="btnSummary" class="btn-animated">Podsumowanie</button>
@@ -74,7 +74,6 @@
 {% endblock %}
 
 {% block page_scripts %}
-  <!-- Chart.js (ładuj w base.html w <head> lub tutaj) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
