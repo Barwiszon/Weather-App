@@ -33,7 +33,7 @@ FONTS_DIR  = os.path.join(BASE_DIR, 'fonts')
 FONT_REG   = os.path.join(FONTS_DIR, 'DejaVuSansCondensed.ttf')
 FONT_BOLD  = os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Bold.ttf')
 
-# ---------------------------------------
+# ---------------------------------------b
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
 
