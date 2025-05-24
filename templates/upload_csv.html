@@ -1,13 +1,44 @@
 {% extends "base.html" %}
-
 {% block title %}Wgraj plik CSV{% endblock %}
 
 {% block content %}
 <div class="upload-container">
   <h2>Wgraj plik CSV z danymi pogodowymi</h2>
   <form method="POST" enctype="multipart/form-data" class="upload-form">
-    <input type="file" name="csv_file" accept=".csv" required>
-    <button type="submit">Wgraj plik</button>
+    <label class="file-input">
+      <span id="fileLabel">Wybierz plik CSV</span>
+      <input type="file" name="csv_file" accept=".csv" required>
+    </label>
+
+    <div class="date-filters">
+      <div class="date-field">
+        <label for="start_date">Data od:</label>
+        <input type="date" name="start_date" id="start_date">
+      </div>
+      <div class="date-field">
+        <label for="end_date">do:</label>
+        <input type="date" name="end_date" id="end_date">
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit">Wgraj i filtruj</button>
   </form>
 </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+  $(function(){
+    const $input    = $('.file-input input[type="file"]');
+    const $fileLabel = $('#fileLabel');
+
+    $input.on('change', function(){
+      if (this.files && this.files.length) {
+        $fileLabel.text(this.files[0].name);
+      } else {
+        $fileLabel.text('Wybierz plik CSV');
+      }
+    });
+  });
+</script>
 {% endblock %}

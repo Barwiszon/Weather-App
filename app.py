@@ -2,6 +2,7 @@ import os
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+from werkzeug.utils import secure_filename
 
 from flask import (
     Flask, render_template, request,
@@ -137,10 +138,9 @@ def generate_pdf():
         flash('Brak nazwy miasta do wygenerowania PDF.')
         return redirect(url_for('index'))
 
-
+    # 1) Pobranie danych current + forecast
     url_cur = f'https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={API_KEY}'
     url_fc  = f'https://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={API_KEY}'
-
     try:
         w = requests.get(url_cur); w.raise_for_status(); weather = w.json()
         f = requests.get(url_fc);  f.raise_for_status(); forecast = f.json()
@@ -148,50 +148,85 @@ def generate_pdf():
         flash(f'Błąd podczas pobierania do PDF: {e}')
         return redirect(url_for('index'))
 
-
+    # 2) Budujemy DataFrame z prognozą i agregujemy po datach
     df = pd.DataFrame([
-        {'dt': i['dt_txt'], 'temp': i['main']['temp']}
-        for i in forecast['list']
+        {
+            'dt':          pd.to_datetime(item['dt_txt']),
+            'temp':        item['main']['temp'],
+            'humidity':    item['main']['humidity'],
+            'wind_speed':  item['wind']['speed']
+        }
+        for item in forecast['list']
     ])
-    df['dt'] = pd.to_datetime(df['dt'])
+    df['date'] = df['dt'].dt.date
+    daily = (
+        df.groupby('date')
+          .agg(
+             tmin = ('temp',       'min'),
+             tmax = ('temp',       'max'),
+             hum  = ('humidity',   'mean'),
+             wind = ('wind_speed', 'mean'),
+          )
+          .reset_index()
+          .head(5)
+    )
+
+    # 3) Generujemy wykres temperatury
     plt.figure(figsize=(8, 3))
     plt.plot(df['dt'], df['temp'], marker='o')
     plt.xticks(rotation=45)
     plt.tight_layout()
-
     buf = BytesIO()
     plt.savefig(buf, format='PNG')
     plt.close()
     buf.seek(0)
-
-
     tmp = os.path.join(STATIC_FOLDER, 'tmp_chart.png')
     with open(tmp, 'wb') as img:
         img.write(buf.getbuffer())
 
-
+    # 4) Tworzymy PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.add_font('DejaVu','', FONT_REG, uni=True)
     pdf.add_font('DejaVu','B', FONT_BOLD, uni=True)
 
+    # 4a) Nagłówek i bieżąca pogoda
     pdf.set_font('DejaVu','B',16)
     pdf.cell(0, 10, f'Raport pogody: {city}', ln=1, align='C')
-
     pdf.set_font('DejaVu','',12)
     pdf.ln(5)
-    pdf.cell(0, 8, f"Temperatura: {weather['main']['temp']} °C", ln=1)
+    pdf.cell(0, 8, f"Temperatura: {weather['main']['temp']:.1f} °C", ln=1)
     pdf.cell(0, 8, f"Wilgotność:  {weather['main']['humidity']} %", ln=1)
-    pdf.cell(0, 8, f"Wiatr:        {weather['wind']['speed']} m/s", ln=1)
-    pdf.cell(0, 8, f"Opis:         {weather['weather'][0]['description']}", ln=1)
+    pdf.cell(0, 8, f"Wiatr:       {weather['wind']['speed']} m/s", ln=1)
+    pdf.cell(0, 8, f"Opis:        {weather['weather'][0]['description']}", ln=1)
 
-    pdf.ln(10)
+    # 4b) Tabelka 5-dniowa
+    pdf.ln(8)
+    pdf.set_font('DejaVu','B',14)
+    pdf.cell(0, 8, 'Prognoza na 5 dni', ln=1)
+    pdf.ln(2)
+    pdf.set_font('DejaVu','B',12)
+    col_w = [30, 25, 25, 30, 30]
+    headers = ['Data','Min °C','Max °C','Śr. wilg.','Śr. wiatr']
+    for i, h in enumerate(headers):
+        pdf.cell(col_w[i], 8, h, border=1, align='C')
+    pdf.ln()
+    pdf.set_font('DejaVu','',11)
+    for _, row in daily.iterrows():
+        pdf.cell(col_w[0], 8, row['date'].strftime('%Y-%m-%d'), border=1, align='C')
+        pdf.cell(col_w[1], 8, f"{row['tmin']:.1f}", border=1, align='C')
+        pdf.cell(col_w[2], 8, f"{row['tmax']:.1f}", border=1, align='C')
+        pdf.cell(col_w[3], 8, f"{row['hum']:.0f}%", border=1, align='C')
+        pdf.cell(col_w[4], 8, f"{row['wind']:.1f} m/s", border=1, align='C')
+        pdf.ln()
+
+    # 4c) Wstawiamy wykres pod tabelką
+    pdf.ln(6)
     pdf.image(tmp, x=10, w=190)
 
-
-    os.remove(tmp)
-
-
+    # 5) Sprzątanie i wysyłka
+    try: os.remove(tmp)
+    except: pass
     pdf_bytes = pdf.output(dest='S').encode('latin-1')
     return send_file(
         BytesIO(pdf_bytes),
@@ -201,47 +236,55 @@ def generate_pdf():
     )
 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'csv'
+
 @app.route('/upload-csv', methods=['GET', 'POST'])
 def upload_csv():
-    df = None
-    filename = None
-
     if request.method == 'POST':
+        # 1) Odbiór i zapis pliku
+        file = request.files.get('csv_file')
+        if not file or not allowed_file(file.filename):
+            flash('Proszę załadować poprawny plik CSV.')
+            return redirect(url_for('upload_csv'))
 
-        if 'csv_file' in request.files and request.files['csv_file'].filename:
-            f = request.files['csv_file']
-            filename = f.filename
-            path = os.path.join(UPLOAD_FOLDER, filename)
-            f.save(path)
-        else:
-            filename = request.form.get('filename')
-            path = os.path.join(UPLOAD_FOLDER, filename)
+        filename = secure_filename(file.filename)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(path)
 
+        # 2) Pobranie wartości filtrów
+        start = request.form.get('start_date')
+        end   = request.form.get('end_date')
+
+        # 3) Wczytanie CSV (parsujemy 'date' jeśli jest)
         try:
             hdrs = pd.read_csv(path, nrows=0).columns.tolist()
-            df = pd.read_csv(path, parse_dates=['date'] if 'date' in hdrs else [])
+            parse_dates = ['date'] if 'date' in hdrs else []
+            df = pd.read_csv(path, parse_dates=parse_dates)
         except Exception as e:
             flash(f'Błąd odczytu CSV: {e}')
             return redirect(url_for('upload_csv'))
 
+        # 4) Filtrowanie po dacie
+        if 'date' in df.columns:
+            if start:
+                df = df[df['date'] >= pd.to_datetime(start)]
+            if end:
+                df = df[df['date'] <= pd.to_datetime(end)]
 
-        if request.form.get('start_date'):
-            df = df[df['date'] >= pd.to_datetime(request.form['start_date'])]
-        if request.form.get('end_date'):
-            df = df[df['date'] <= pd.to_datetime(request.form['end_date'])]
-
-        preview_html = df.head().to_html(classes='preview-table', index=False)
+        # 5) Przygotowanie podglądu, podsumowania i wykresów
+        preview_html = df.head(20).to_html(classes='preview-table', index=False)
         summary_html = df.describe().T.to_html(classes='summary-table')
 
         metrics = {
             'records': len(df),
-            'avg_temp': df['temperature'].mean() if 'temperature' in df else None,
-            'max_humidity': df['humidity'].max() if 'humidity' in df else None,
-            'max_wind': df['wind_speed'].max() if 'wind_speed' in df else None
+            'avg_temp': df['temperature'].mean() if 'temperature' in df.columns else None,
+            'max_humidity': df['humidity'].max()    if 'humidity'    in df.columns else None,
+            'max_wind': df['wind_speed'].max()      if 'wind_speed'  in df.columns else None
         }
-        dates_csv = df['date'].dt.strftime('%Y-%m-%d').tolist() if 'date' in df else []
-        temp_csv  = df['temperature'].tolist() if 'temperature' in df else []
-        hum_csv   = df['humidity'].tolist() if 'humidity' in df else []
+        dates_csv    = df['date'].dt.strftime('%Y-%m-%d').tolist() if 'date' in df.columns else []
+        temp_csv     = df['temperature'].tolist() if 'temperature' in df.columns else []
+        humidity_csv = df['humidity'].tolist()    if 'humidity'    in df.columns else []
 
         return render_template(
             'upload_success.html',
@@ -251,10 +294,11 @@ def upload_csv():
             metrics=metrics,
             dates=dates_csv,
             temp_data=temp_csv,
-            humidity_data=hum_csv,
+            humidity_data=humidity_csv,
             has_date_column='date' in df.columns
         )
 
+    # GET
     return render_template('upload_csv.html')
 
 

@@ -30,9 +30,9 @@ body {
   line-height: 1.5;
 }
 main {
-  margin: 80px auto 2rem; /* zostaw miejsce na navbar */
+  margin: 80px auto 32px; /* zostaw miejsce na navbar */
   max-width: 1200px;
-  padding: 0 1rem;
+  padding: 0 16px;
 }
 
 /* ============================================================================
@@ -40,7 +40,7 @@ main {
    ============================================================================ */
 .navbar {
   position: fixed; top: 0; left: 0;
-  width: 100%; padding: 0.75rem 1.5rem;
+  width: 100%; padding: 12px 24px;
   background: var(--dark-90);
   backdrop-filter: blur(4px);
   display: flex; justify-content: space-between; align-items: center;
@@ -48,13 +48,13 @@ main {
 }
 .navbar h1 {
   color: var(--primary);
-  font-size: 1.8rem;
+  font-size: 28px;
 }
 .navbar-links a {
   color: var(--primary);
   text-decoration: none;
-  margin-left: 1rem;
-  padding: 0.4rem 0.8rem;
+  margin-left: 16px;
+  padding: 6px 12px;
   border-radius: var(--radius);
   transition: background var(--transition);
 }
@@ -68,16 +68,19 @@ main {
    ============================================================================ */
 .intro-section {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 }
 .intro-section h2 {
-  font-size: 2rem; margin-bottom: 0.75rem;
+  font-size: 32px;
+  margin-bottom: 12px;
 }
 .city-form {
-  display: inline-flex; gap: 0.5rem;
+  display: inline-flex;
+  gap: 8px;
 }
 .city-form input {
-  padding: 0.5rem; width: 200px;
+  padding: 8px;
+  width: 200px;
   border: 2px solid var(--primary);
   border-radius: var(--radius);
   background: var(--dark);
@@ -85,9 +88,10 @@ main {
   text-align: center;
 }
 .city-form button {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: var(--primary);
-  border: none; border-radius: var(--radius);
+  border: none;
+  border-radius: var(--radius);
   color: var(--dark);
   cursor: pointer;
   transition: transform var(--transition), box-shadow var(--transition);
@@ -101,74 +105,96 @@ main {
    WEATHER CONTAINER + CARDS (strona główna)
    ============================================================================ */
 .weather-container {
-  display: flex; flex-wrap: wrap; gap: 2rem;
-  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-bottom: 32px;
 }
-.weather-left, .weather-right {
+.weather-left,
+.weather-right {
   background: var(--glass-bg);
   backdrop-filter: blur(6px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem;
-  flex: 1; min-width: 280px;
+  padding: 16px;
+  flex: 1;
+  min-width: 280px;
 }
 .weather-card {
-  display: flex; flex-direction: column; gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 .weather-card h3 {
-  color: var(--primary); font-size: 1.4rem;
+  color: var(--primary);
+  font-size: 22px;
 }
 .weather-card ul {
-  list-style: none; color: var(--light);
+  list-style: none;
+  color: var(--light);
 }
 .weather-card ul li {
-  display: flex; align-items: center; gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .pdf-button {
   align-self: start;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: var(--primary);
-  border: none; border-radius: var(--radius);
-  color: var(--dark); cursor: pointer;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--dark);
+  cursor: pointer;
   transition: background var(--transition);
 }
-.pdf-button:hover { background: #ffb733; }
+.pdf-button:hover {
+  background: #ffb733;
+}
 
 /* 5-dniowa prognoza tabelaryczna */
 .forecast-5days {
-  margin-top: 1.5rem;
+  margin-top: 24px;
 }
 .forecast-5days h4 {
-  margin-bottom: 0.5rem; color: var(--primary);
+  margin-bottom: 8px;
+  color: var(--primary);
 }
 .forecast-5days table {
-  width: 100%; border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
   background: rgba(255,149,0,0.05);
 }
 .forecast-5days th,
 .forecast-5days td {
   border: 1px solid var(--border);
-  padding: 0.4rem; text-align: center;
-  color: var(--light); font-size: 0.9rem;
+  padding: 6px;
+  text-align: center;
+  color: var(--light);
+  font-size: 14px;
 }
 .forecast-5days thead th {
-  background: var(--primary); color: var(--dark);
+  background: var(--primary);
+  color: var(--dark);
 }
 
 /* ============================================================================
    TABS & CHARTS (strona główna)
    ============================================================================ */
 .tabs {
-  display: flex; gap: 0.5rem; margin-top: 1rem;
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
 }
 .tab-button {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: var(--dark);
   color: var(--light);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
   transition: background var(--transition);
+  font-size: 14px;
 }
 .tab-button.active {
   background: var(--primary);
@@ -179,11 +205,14 @@ main {
 }
 .tab-content-wrapper {
   position: relative;
-  width: 100%; height: 400px;
-  margin-top: 1rem;
+  width: 100%;
+  height: 400px;
+  margin-top: 16px;
 }
 .tab-content {
-  display: none; position: absolute; inset: 0;
+  display: none;
+  position: absolute;
+  inset: 0;
 }
 .tab-content.active {
   display: block;
@@ -194,12 +223,12 @@ main {
 }
 
 /* ============================================================================
-   UPLOAD CSV FORM (upload_csv.html)
+   UPLOAD CSV FORM
    ============================================================================ */
 .upload-container {
-  max-width: 600px;
-  margin: 120px auto 2rem;
-  padding: 2rem;
+  max-width: 700px;
+  margin: 120px auto 32px;
+  padding: 32px 40px;
   background: var(--glass-bg);
   backdrop-filter: blur(6px);
   border: 2px solid var(--border);
@@ -207,44 +236,107 @@ main {
   text-align: center;
 }
 .upload-container h2 {
-  font-size: 1.6rem;
-  margin-bottom: 1.5rem;
+  font-size: 29px;
+  margin-bottom: 24px;
 }
+
+/* główny formularz – pole pliku nad datami */
 .upload-form {
   display: flex;
-  gap: 0.75rem;
-  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
   align-items: center;
 }
-.upload-form input[type="file"] {
-  flex: 1;
-  padding: 0.6rem;
-  border: 1px solid var(--primary);
+
+.file-input {
+  position: relative;
+  width: 300px;   /* albo flex-basis itd. */
+  height: 200px;  /* dostosuj do potrzeby */
+  border: 2px dashed var(--primary);
   border-radius: var(--radius);
   background: var(--dark);
   color: var(--primary);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+.file-input:hover {
+  background: rgba(255,149,0,0.1);
+  border-color: var(--primary-80);
+}
+.file-input input[type="file"] {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
   cursor: pointer;
 }
-.upload-form button {
-  padding: 0.6rem 1.2rem;
+.file-input span {
+  pointer-events: none;
+  font-weight: bold;
+}
+
+
+/* pola daty (pod polem pliku) */
+.date-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex: 1 1 300px;
+  max-width: 400px;
+}
+.date-field {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--primary);
+}
+.date-field label {
+  margin-bottom: 4px;
+}
+.date-field input[type="date"] {
+  padding: 8px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--dark);
+  color: var(--light);
+  transition: background var(--transition), border-color var(--transition);
+}
+.date-field input[type="date"]:hover,
+.date-field input[type="date"]:focus {
+  background: rgba(255,149,0,0.1);
+  border-color: var(--primary-80);
+}
+
+/* przycisk Submit */
+.btn-submit {
+  padding: 12px 24px;
   background: var(--primary);
-  border: none; border-radius: var(--radius);
-  color: var(--dark); font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--dark);
+  font-weight: bold;
   cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
-.upload-form button:hover {
+.btn-submit:hover {
   transform: scale(1.05);
   background: #ffb733;
 }
 
 /* ============================================================================
-   UPLOAD SUCCESS / PODGLĄD CSV (upload_success.html)
+   UPLOAD SUCCESS / PODGLĄD CSV
    ============================================================================ */
 .success-container {
   max-width: 1000px;
-  margin: 120px auto 2rem;
-  padding: 2rem;
+  margin: 120px auto 32px;
+  padding: 32px;
   background: var(--glass-bg);
   backdrop-filter: blur(6px);
   border: 2px solid var(--border);
@@ -252,29 +344,32 @@ main {
 }
 .success-container h2,
 .success-container h3 {
-  font-size: 1.6rem;
-  margin-bottom: 1rem;
+  font-size: 26px;
+  margin-bottom: 16px;
   text-align: center;
 }
 
-/* pierwsze 5 wierszy */
+
 .table-wrapper {
   overflow-x: visible;
-  margin: 1.5rem 0;
-  padding: 0.5rem;
+  margin: 24px 0;
+  padding: 8px;
   background: rgba(255,149,0,0.05);
   border: 1px solid var(--primary);
   border-radius: var(--radius);
 }
 .table-wrapper table {
-  width: 100%; border-collapse: collapse; table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
 }
 .table-wrapper th,
 .table-wrapper td {
   border: 1px solid var(--primary);
-  padding: 0.4rem 0.6rem;
+  padding: 6px 10px;
   text-align: center;
-  color: #fff; font-size: 0.9rem;
+  color: #fff;
+  font-size: 14px;
 }
 .table-wrapper thead th {
   background: var(--primary);
@@ -290,13 +385,16 @@ main {
 
 /* karty metryk i przyciski nawigacji */
 .metrics-cards {
-  display: flex; flex-wrap: wrap; gap: 1rem;
-  justify-content: center; margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 24px;
 }
 .metrics-cards .card {
   flex: 1 1 150px;
   background: var(--dark);
-  padding: 1rem;
+  padding: 16px;
   border-radius: var(--radius);
   text-align: center;
   box-shadow: 0 2px 8px var(--dark-90);
@@ -307,24 +405,28 @@ main {
 }
 .metrics-cards .card h4 {
   color: var(--primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 .metrics-cards .card p {
   color: var(--light);
-  font-size: 1.2rem;
+  font-size: 18px;
   font-weight: bold;
 }
 
 .button-group {
-  display: flex; gap: 1rem;
-  justify-content: center; margin-top: 1.5rem;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 24px;
 }
 .button-group button,
 .btn-animated {
-  padding: 0.6rem 1.2rem;
+  padding: 8px 16px;
   background: var(--primary);
-  border: none; border-radius: var(--radius);
-  color: var(--dark); font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--dark);
+  font-weight: bold;
   cursor: pointer;
   transition: transform var(--transition), background var(--transition);
 }
@@ -338,46 +440,60 @@ main {
 .charts-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 16px;
+  margin-top: 24px;
 }
 .chart-card {
   background: var(--glass-bg);
   backdrop-filter: blur(6px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem;
-  display: flex; flex-direction: column;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
   height: 350px;
   box-shadow: 0 4px 8px var(--shadow);
 }
 .chart-card h4 {
   color: var(--primary);
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 .chart-card canvas {
   flex: 1;
   width: 100% !important;
-  height: calc(100% - 1rem) !important;
+  height: calc(100% - 16px) !important;
 }
 
 /* ============================================================================
    RESPONSYWNOŚĆ
    ============================================================================ */
 @media (max-width: 800px) {
-  .weather-container { flex-direction: column; }
-  .tab-content-wrapper { height: 300px; }
-  .chart-card { height: 250px; }
+  .weather-container {
+    flex-direction: column;
+  }
+  .tab-content-wrapper {
+    height: 300px;
+  }
+  .chart-card {
+    height: 250px;
+  }
 
   .upload-container,
   .success-container {
-    margin: 80px auto 1rem;
-    padding: 1rem;
+    margin: 80px auto 16px;
+    padding: 16px;
   }
   .upload-form,
   .metrics-cards,
   .button-group {
     flex-direction: column;
+    align-items: stretch;
+  }
+  .file-input,
+  .date-filters,
+  .btn-submit {
+    width: 100%;
+    max-width: none;
   }
 }
