@@ -61,6 +61,7 @@ Aplikacja webowa napisana w Pythonie z użyciem Flask, umożliwiająca:
    pip install -r requirements.txt
    ```
 4.**Konfiguracja**
+   Utwórz plik config.py w katalogu głównym lub ustaw zmienne środowiskowe:
    ```bash
    API_KEY = 'TWÓJ_KLUCZ_OPENWEATHERMAP'
    FLASK_SECRET_KEY = 'JAKIŚ_TAJNY_KLUCZ'
