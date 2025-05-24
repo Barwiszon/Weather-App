@@ -43,21 +43,31 @@ Aplikacja webowa napisana w Pythonie z użyciem Flask, umożliwiająca:
    ```bash
    git clone https://github.com/Barwiszon/Weather-App.git
    cd Weather-App
+   ```
 2. **Utwórz i aktywuj wirtualne środowisko**
+   ```bash
    python -m venv venv
+   ```
    # Windows
+   ```bash
    venv\Scripts\activate
+   ```
    # macOS / Linux
+   ```bash
    source venv/bin/activate
+   ```
 3.**Zainstaluj zależności**
+   ```bash
    pip install -r requirements.txt
+   ```
 4.**Konfiguracja**
-Utwórz plik config.py w katalogu głównym lub ustaw zmienne środowiskowe:
-
-API_KEY = 'TWÓJ_KLUCZ_OPENWEATHERMAP'
-FLASK_SECRET_KEY = 'JAKIŚ_TAJNY_KLUCZ'
-
+   ```bash
+   API_KEY = 'TWÓJ_KLUCZ_OPENWEATHERMAP'
+   FLASK_SECRET_KEY = 'JAKIŚ_TAJNY_KLUCZ'
+   ```
 5.**Uruchom aplikację**
-python app.py
+   ```bash
+   python app.py
+   ```
 
 Aplikacja dostępna pod adresem: http://127.0.0.1:5000
